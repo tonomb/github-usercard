@@ -31,12 +31,38 @@
     manually find some other users' github handles, or use the list found at the
     bottom of the page. Get at least 5 different Github usernames and add them as
     Individual strings to the friendsArray below.
+  
+  List of LS Instructors Github username's:
+    tetondan
+    dustinmyers
+    justsml
+    luishrd
+    bigknell
+
 
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
+
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+followersArray.forEach(user=>{
+  axios.get(`https://api.github.com/users/${user}`)
+  .then(data =>{
+    document.querySelector('.cards').appendChild(cardCreator(data));
+  })
+  .catch(err=>{
+    console.log(err);
+    
+  })
+})
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -94,8 +120,9 @@ function cardCreator(gitData){
   cardUser.textContent = gitData.data.login;
   location.textContent = `Location: ${gitData.data.location}`;
   profile.textContent  = 'Profile: ';
-  page.setAttribute('href', gitData.data.url);
-  page.textContent = gitData.data.url;
+  page.setAttribute('href', gitData.data.html_url);
+  page.setAttribute('target', '_blank');
+  page.textContent = gitData.data.html_url;
   followers.textContent = `Followers: ${gitData.data.followers}`;
   following.textContent = `Following: ${gitData.data.following}`;
   bio.textContent = `Bio: ${gitData.data.bio}`;
@@ -106,11 +133,4 @@ function cardCreator(gitData){
 }
 
 
-/*
-  List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
-*/
+
