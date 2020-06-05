@@ -7,7 +7,7 @@
  axios.get('https://api.github.com/users/tonomb')
   .then(data =>{
     document.querySelector('.cards').appendChild(cardCreator(data));
-    // GitHubCalendar('.calendar', data.data.login) //untested
+    GitHubCalendar(`#${data.data.login}`, data.data.login) //untested
   })
   .catch(err=>{
     console.log(err);
@@ -58,6 +58,7 @@ followersArray.forEach(user=>{
   axios.get(`https://api.github.com/users/${user}`)
   .then(data =>{
     document.querySelector('.cards').appendChild(cardCreator(data));
+    GitHubCalendar(`#${data.data.login}`, data.data.login)
   })
   .catch(err=>{
     console.log(err);
@@ -129,6 +130,7 @@ function cardCreator(gitData){
   followers.textContent = `Followers: ${gitData.data.followers}`;
   following.textContent = `Following: ${gitData.data.following}`;
   bio.textContent = `Bio: ${gitData.data.bio}`;
+  calendar.setAttribute('id', gitData.data.login )
   
   profile.insertAdjacentElement("beforeend", page); 
 
