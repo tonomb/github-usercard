@@ -4,13 +4,22 @@
     https://api.github.com/users/<your name>
 */
 
-/*
-  STEP 2: Inspect and study the data coming back, this is YOUR
-    github info! You will need to understand the structure of this
-    data in order to use it to build your component function
+ axios.get('https://api.github.com/users/tonomb')
+  .then(data =>{
+    document.querySelector('.cards').appendChild(cardCreator(data));
+    GitHubCalendar(`#${data.data.login}`, data.data.login) //untested
+  })
+  .catch(err=>{
+    console.log(err);
+    
+  })
 
-    Skip to STEP 3.
-*/
+  // STEP 2: Inspect and study the data coming back, this is YOUR
+  //   github info! You will need to understand the structure of this
+  //   data in order to use it to build your component function
+
+  //   Skip to STEP 3.
+
 
 /*
   STEP 4: Pass the data received from Github into your function,
@@ -23,12 +32,39 @@
     manually find some other users' github handles, or use the list found at the
     bottom of the page. Get at least 5 different Github usernames and add them as
     Individual strings to the friendsArray below.
+  
+  List of LS Instructors Github username's:
+    tetondan
+    dustinmyers
+    justsml
+    luishrd
+    bigknell
+
 
     Using that array, iterate over it, requesting data for each user, creating a new card for each
     user, and adding that card to the DOM.
+
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+
+followersArray.forEach(user=>{
+  axios.get(`https://api.github.com/users/${user}`)
+  .then(data =>{
+    document.querySelector('.cards').appendChild(cardCreator(data));
+    GitHubCalendar(`#${data.data.login}`, data.data.login)
+  })
+  .catch(err=>{
+    console.log(err);
+    
+  })
+})
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -50,11 +86,60 @@ const followersArray = [];
     </div>
 */
 
-/*
-  List of LS Instructors Github username's:
-    tetondan
-    dustinmyers
-    justsml
-    luishrd
-    bigknell
-*/
+function cardCreator(gitData){
+  const card = document.createElement('card');
+  const img = document.createElement('img');
+  const cardInfo = document.createElement('div');
+  const cardName = document.createElement('h3');
+  const cardUser = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const page = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+  const calendar = document.createElement('div');
+
+
+  card.appendChild(img);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(cardName);
+  cardInfo.appendChild(cardUser);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+  
+  
+  card.classList.add('card');
+  cardInfo.classList.add('card-info');
+  cardName.classList.add('name');
+  cardUser.classList.add('username');
+  calendar.classList.add('calendar');
+  
+  
+  img.setAttribute('src', gitData.data.avatar_url);
+  cardName.textContent = gitData.data.name;
+  cardUser.textContent = gitData.data.login;
+  location.textContent = `Location: ${gitData.data.location}`;
+  profile.textContent  = 'Profile: ';
+  page.setAttribute('href', gitData.data.html_url);
+  page.setAttribute('target', '_blank');
+  page.textContent = gitData.data.html_url;
+  followers.textContent = `Followers: ${gitData.data.followers}`;
+  following.textContent = `Following: ${gitData.data.following}`;
+  bio.textContent = `Bio: ${gitData.data.bio}`;
+  calendar.setAttribute('id', gitData.data.login )
+  
+  profile.insertAdjacentElement("beforeend", page); 
+
+  card.appendChild(calendar);
+  // GitHubCalendar('.calendar', gitData.data.login)
+  
+ 
+  return card
+}
+
+
+
